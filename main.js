@@ -2,9 +2,46 @@
 const EMPTY_HEART = '♡'
 const FULL_HEART = '♥'
 
-// Your JavaScript code goes here!
+//using the spread operator to turn the gathered elements into an array, which is necessary to iterate on the elements
+let heartsNodeArray = [...document.getElementsByClassName("like-glyph")]
+
+let modal = document.getElementById('modal')
+let modalParagraph = document.getElementById('modal-message')
+
+//Gathers the click event (i.e. click on the heart icon) that was just performed
+let callServerAndCatch = (event) => {
+  mimicServerCall() 
+  .then(() => handleResponse(event))
+  .catch(error => handleError(error))
+  }
+  
+
+//function that addresses the error state
+let handleError = (errorMessage) => {
+  modal.classList.remove('hidden')
+  modalParagraph.innerText = errorMessage
+  setTimeout(() => { 
+    modal.classList.add('hidden')
+    modalParagraph.innerText = ""
+  }, 3000)
+}
+
+//function that addresses the successful like/unlike state
+let handleResponse = (event) => {
+  if (event.target.textContent === EMPTY_HEART) {
+    event.target.classList.add('activated-heart')
+    event.target.textContent = FULL_HEART
+  } else {
+    event.target.classList.remove('activated-heart')
+    event.target.textContent = EMPTY_HEART 
+  }
+}
 
 
+//event listener that listens for the click. had to go near the end of the code
+heartsNodeArray.map(heartNode => {
+  heartNode.addEventListener('click', callServerAndCatch)
+})
 
 
 //------------------------------------------------------------------------------
